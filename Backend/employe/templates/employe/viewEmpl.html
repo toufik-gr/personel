@@ -1,0 +1,145 @@
+{% extends "layout.html" %} 
+{% load crispy_forms_tags %}
+ 
+{% block content %}
+
+     <title>تحديث</title>
+     <h2 class="text-center my-3 text-danger"> عرض المعلومات  </h2>
+     <div class="container" style="direction: rtl; text-align: right;">
+          
+      <div class="card card-body">
+        <form class="row g-2"  method="POST" enctype = "multipart/form-data">
+            {% csrf_token %}
+            <div class="row g-2  text-info">
+            <div class="col-md-4">
+                <label class="fw-bold">اللقب:</label>
+                <p class="form-control-plaintext">{{ form.instance.Nom }}</p>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">الإسم:</label>
+                <p class="form-control-plaintext">{{ form.instance.Prénom }}</p>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">النوع:</label>
+                <p class="form-control-plaintext">{{ form.instance.Type }}</p>
+            </div>
+        </div>
+    
+        <div class="row g-4 text-info">
+            <div class="col-md-3">
+                <label class="fw-bold">NIN:</label>
+                <p class="form-control-plaintext">{{ form.instance.NIN }}</p>
+            </div>
+            <div class="col-md-3">
+                <label class="fw-bold">رقم ض إ</label>
+                <p class="form-control-plaintext">{{ form.instance.matricule }}</p>
+            </div>
+            <div class="col-md-3">
+                <label class="fw-bold">تاريخ الميلاد:</label>
+                <p class="form-control-plaintext">{{ form.instance.dat_naiss|date:"Y-m-d"}}</p>
+            </div>
+            <div class="col-md-3">
+                <label class="fw-bold">مكان الميلاد:</label>
+                <p class="form-control-plaintext">{{ form.instance.Lieu_naiss}}</p>
+            </div>
+        </div>
+    
+        <div class="row g-4 text-info">
+            <div class="col-md-4">
+                <label class="fw-bold">تاريخ التوظيف:</label>
+                <p class="form-control-plaintext">{{ form.instance.date_recrut|date:"Y-m-d" }}</p>
+            </div>
+             
+            <div class="col-md-4">
+                <label class="fw-bold">الرتبة:</label>
+                <p class="form-control-plaintext">{{ form.instance.grade }}</p>
+            </div>
+            <div class="col-md-3">
+                <label class="fw-bold">الدرجة:</label>
+                <p class="form-control-plaintext">{{ form.instance.Echelon }}</p>
+            </div>
+
+            <div class="col-md-3">
+                <label class="fw-bold">تاريخ الرتبة:</label>
+                <p class="form-control-plaintext">{{ form.instance.date_grade|date:"Y-m-d"}}</p>
+            </div>
+            <div class="col-md-3">
+                <label class="fw-bold">الفئة:</label>
+                <p class="form-control-plaintext">{{ form.instance.Catégorie }}</p>
+            </div>
+            <div class="col-md-3">
+                <label class="fw-bold">الشعبة:</label>
+                <p class="form-control-plaintext">{{ form.instance.division }}</p>
+            </div>
+           
+            
+        </div>
+    
+        <div class="row g-4  text-info">
+            <div class=" col-md-3 ">
+                <label class="fw-bold">الكلية:</label>
+                <p class="form-control-plaintext">{{ form.instance.faculte }}</p>
+            </div>
+            <div class="col-md-3">
+                <label class="fw-bold">الوضعية:</label>
+                <p id="Pos"class="form-control-plaintext">{{ form.instance.position }}</p>
+            </div>
+            {% if form.instance.position != 'في الخدمة' %}
+            <div class="col-md-3 " >
+                <label class="fw-bold">بداية الوضعية:</label>
+                <p id="debutPos"  class="form-control-plaintext"> {{form.instance.debut_position|date:"Y-m-d"}}</p>
+            </div> 
+            <div class="col-md-3">
+               <label class="fw-bold">نهاية الوضعية:</label>
+                <p id="finPos" data-date="{{ form.instance.fin_position|date:"Y-m-d"}}" 
+                class="form-control-plaintext finP">{{form.instance.fin_position|date:"Y-m-d"}}</p>
+             </div>
+         
+            {% endif %}           
+        </div>
+            
+    </div>
+</div>
+    <br>
+    
+    <button  class="btn btn-success" type="submit">
+        <i class="fa fa-edit fa-lg"></i> تحديث
+    </button>
+    <!-- Back Button -->
+    <a class="btn btn-warning text-white" href="{% url 'employeList' 'update' %}">
+        <i class="fa fa-undo"></i> رجوع
+    </a>
+</form>   
+</div>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let today = new Date().setHours(0, 0, 0, 0); // Reset time for accurate comparison
+    
+        // Select both elements
+        let fields = document.querySelectorAll(" #finPos");
+    
+        fields.forEach(field => {
+            let dateStr = field.getAttribute("data-date");
+             
+            if (!dateStr) return; // Skip if no date is found
+    
+            let finDate = new Date(`${dateStr}T00:00:00`); // Ensure correct date parsing
+            let daysDifference = (finDate - today) / (1000 * 60 * 60 * 24); // Convert to days
+    
+            // Apply styles based on the date difference
+            if (daysDifference <= 60) { 
+                field.style.backgroundColor = "red";
+                field.style.color = "white"; // Improve readability
+            } else {
+                field.style.backgroundColor = "yellow";
+                field.style.color = "black"; // Ensure contrast
+            }
+        });
+    });
+    </script>
+    
+{% endblock script %}

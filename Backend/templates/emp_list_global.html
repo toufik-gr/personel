@@ -1,0 +1,268 @@
+{% extends "layout.html" %} {% load crispy_forms_tags %} {% block content %}
+
+<h3 class="text-center my-3 text-danger">{{action.action_title}}</h3>
+<!-- Search Bar -->
+<form method="GET" class="d-flex align-items-center gap-2">
+  الرتبة
+  <div class="me-2 w-25 mt-3">{{ filter_form.form|crispy}}</div>
+  الوضعية
+  <div class="me-2 w-25 mt-3">{{ filter_position.form|crispy}}</div>
+  <input
+    type="text"
+    name="query"
+    value="{{ request.GET.query }}"
+    placeholder="ابحث ..."
+    class="form-control w-25 me-2"
+  />
+  <button type="submit" class="btn btn-primary">بحث</button>
+</form>
+
+<!-- Column for the List (ul) and Link (a) -->
+<div class="text-start ms-0">
+  <h2>العدد : <strong>{{count}} </strong></h2>
+</div>
+<div class="text-right mr-0">
+  <!-- Table -->
+  <table class="table table-striped">
+    <thead>
+      <tr class="text-right">
+        <th>رقم</th>
+        <th>اللقب</th>
+        <th>الإسم</th>
+        <th>الميلاد</th>
+        <th>الرتبة</th>
+        <th>الوضعية</th>
+        <th>من تاريخ</th>
+        <th>إلى تاريخ</th>
+        <th>الكلية</th>
+        <th scope="col">{{action.action_name}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for emp in page_obj %} {% comment %} <tr 
+      {% if emp.position in "إستيداع قانوني" or emp.position == "إستيداع شخصي"%} class="table-secondary
+      text-right" {% endcomment %}
+    <tr 
+        {% if emp.is_long_leave %} class="table-danger text-right" 
+        {% elif  emp.position != "في الخدمة" %} class="table-success text-right"{% endif%}>
+      
+        <td>{{ emp.id }}</td>
+        <td>
+          <a href="?query={{ emp.Nom }}" class="text-decoration-none">
+            {{ emp.Nom }}</a
+          >
+        </td>
+
+        <td>
+          <a href="?query={{ emp.Prénom }}" class="text-decoration-none">
+            {{ emp.Prénom }}</a
+          >
+        </td>
+        <td>{{ emp.dat_naiss|date:"Y-m-d" }}</td>
+        <td>{{ emp.grade }}</td>
+        <td>{{ emp.position }}</td>
+        <td>{{ emp.debut_position|date:"Y-m-d" }}</td>
+        <td>{{ emp.fin_position|date:"Y-m-d"}}</td>
+        <td>{{ emp.faculte }}</td>
+        {% comment %} add_file {% endcomment %}
+        {% if action.action_title == 'إضافة ملفات المتعاقدين' %}
+        <td>
+          <a href="{% url 'upload_pdf' emp.id %}"
+            ><i class="fa fa-database" aria-hidden="true"></i
+          ></a>
+        </td>
+        {% elif action.action_title == 'إضافة ملفات الأساتذة' %}
+        <td>
+          <a href="{% url 'upload_ens_pdf' emp.id %}"
+            ><i class="fa fa-database" aria-hidden="true"></i
+          ></a>
+        </td>
+        {% elif action.action_title == 'إضافة ملفات الموظفين' %}
+        <td>
+          <a href="{% url 'upload_empl_pdf' emp.id %}"
+            ><i class="fa fa-database" aria-hidden="true"></i
+          ></a>
+        </td>
+
+        {% comment %} Update {% endcomment %} {% elif action.action_title =='قائمة المتعاقدين والتحديث' %}
+        <td>
+          <a href="{% url 'posts:update_emp' emp.id %}"
+            ><i class="fa fa-edit" aria-hidden="true"></i
+          ></a>
+        </td>
+        <td>
+          <a href="{% url 'posts:view_emp' emp.id %}"
+            ><i class="fas fa-eye" aria-hidden="true"></i
+          ></a>
+        </td>
+        {% elif action.action_title == 'قائمة الأساتذة والتحديث' %}
+        <td>
+          <a href="{% url 'enseignants:update_ens' emp.id %}"
+            ><i class="fa fa-edit"></i
+          ></a>
+        </td>
+        <td>
+          <a href="{% url 'enseignants:view_ens' emp.id %}"
+            ><i class="fa fa-eye"></i
+          ></a>
+        </td>
+        {% elif action.action_title == 'قائمة الموظفين والتحديث' %}
+        <td>
+          <a href="{% url 'employe:update_empl' emp.id %}"
+            ><i class="fa fa-edit"></i
+          ></a>
+        </td>
+        <td>
+          <a href="{% url 'employe:view_empl' emp.id %}"
+            ><i class="fa fa-eye"></i
+          ></a>
+        </td>
+
+        {% comment %} view {% endcomment %} {% elif action.action_title == 'عرض    ملفات المتعاقدين' %}
+        <td class="emp-item" data-emp-id="{{ emp.id }}" data-type="posts">
+          <i class="fas fa-eye"> </i>
+        </td>
+        {% elif action.action_title == 'عرض ملفات الأساتذة' %}
+        <td class="emp-item" data-emp-id="{{ emp.id }}" data-type="enseignants">
+          <i class="fas fa-eye"> </i>
+        </td>
+        {% elif action.action_title == 'عرض ملفات الموظفين' %}
+        <td class="emp-item" data-emp-id="{{ emp.id }}" data-type="employe">
+          <i class="fas fa-eye"> </i>
+        </td>
+
+        {% comment %} preview {% endcomment %} {% elif action.action_title == 'معاينة ملفات المتعاقدين' %}
+        <td>
+          <a href="{% url 'posts:pdf_list' emp.id %}"
+            ><i class="fas fa-eye"></i
+          ></a>
+        </td>
+        {% elif action.action_title == 'معاينة ملفات الأساتذة' %}
+        <td>
+          <a href="{% url 'enseignants:pdf_list' emp.id %}"
+            ><i class="fas fa-eye"></i
+          ></a>
+        </td>
+        {% elif action.action_title == 'معاينة ملفات الموظفين' %}
+        <td>
+          <a href="{% url 'employe:pdf_list' emp.id %}"
+            ><i class="fas fa-eye"></i
+          ></a>
+        </td>
+
+        {% endif %}
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" class="text-center text-muted">لا يوجد نتائج</td>
+      </tr>
+
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<br />
+
+<!-- Pagination Links -->
+{% comment %} {% load django_filters %} {# Load Django filters if not already
+loaded #} {% endcomment %} {% load pagination_tags %}
+<div class="pagination d-flex justify-content-end align-items-center">
+  {% if page_obj.has_previous %}
+  <a
+    class="btn btn-outline-primary mx-1"
+    href="?{% update_query_params request 1 %}"
+    >الأولى</a
+  >
+  <a
+    class="btn btn-outline-primary mx-1"
+    href="?{% update_query_params request page_obj.previous_page_number %}"
+    >السابقة</a
+  >
+  {% endif %}
+
+  <span class="mx-2"
+    >صفحة {{ page_obj.number }} من {{ page_obj.paginator.num_pages }}</span
+  >
+
+  {% if page_obj.has_next %}
+  <a
+    class="btn btn-outline-primary mx-1"
+    href="?{% update_query_params request page_obj.next_page_number %}"
+    >التالية</a
+  >
+  <a
+    class="btn btn-outline-primary mx-1"
+    href="?{% update_query_params request page_obj.paginator.num_pages %}"
+    >الأخيرة</a
+  >
+  {% endif %}
+</div>
+
+{% if action.action_name == 'معاينة' %}
+
+<h2>كل الملفات</h2>
+<ul id="pdf-list"></ul>
+
+<table id="pdf-table" class="table table-striped" border="1">
+  <thead class="bg-success tetx-white">
+    <tr>
+      <th>رقم</th>
+      <th>رابط الملف</th>
+      <th>الرتبة</th>
+      <th>المستخدم</th>
+      <th>بتاريخ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Data will be inserted here -->
+  </tbody>
+</table>
+{% endif %} {% endblock content %} {% block script %} {% comment %} Function to
+insert table of Pdfs of specific employee {% endcomment %}
+<script>
+  $(document).ready(function(){
+      $(".emp-item").click(function(){
+          var empID = $(this).data("emp-id");  // Get clicked employee ID
+          var type = $(this).data("type");  // Get type from data attribute
+
+          // Dynamically choose the correct URL
+          var url = (type === "enseignants") ? "{% url 'enseignants:get_pdfs' %}" :
+          (type === "employe") ? "{% url 'employe:get_pdfs' %}" :
+          "{% url 'posts:get_pdfs' %}";
+
+          $.ajax({
+              url: url ,
+              data: {'emp_id': empID},
+              dataType: "json",
+              success: function(data) {
+                  $("#pdf-table tbody").empty(); // Clear old results
+
+                  if (data.length > 0) {
+                      $.each(data, function(index, pdf){
+                          {% comment %} console.log("Raw URL:", pdf.pdf_url); // Debugging {% endcomment %}
+
+                          var decodedUrl = decodeURIComponent(pdf.pdf_url); // فك تشفير الرابط
+                          $("#pdf-table tbody").append(
+                              `<tr>
+                                  <td>${index + 1}</td>
+                                  <td><a href="${decodedUrl}" target="_blank">${decodedUrl} ${index + 1}</a></td>
+                                  {% comment %} <td><a href="{% url 'posts:download_pdf' ${pdf.id} %}"><i class="fas fa-download"></i></a></td> {% endcomment %}
+                                  <td>${pdf.grade}</td>
+                                  <td>${pdf.user}</td>
+                                  <td>${pdf.uploaded_at}</td>
+                              </tr>`
+                          );
+                      });
+                  } else {
+                      $("#pdf-table tbody").append(
+                          `<tr>
+                              <td colspan="4">لا يوجد ملف</td>
+                          </tr>`
+                      );
+                  }
+              }
+          });
+      });
+  });
+</script>
+{% endblock script %}

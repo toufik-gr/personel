@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<br>
+    <h2>الإحصائيات </h2>
+       
+<br>
+<div class="text-right mr-0">
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr class="text-right bg-secondary text-white">
+                <th>المستخدم</th>
+                <th>عدد المتعاقدين</th>
+                <th>العدد المنجز</th>
+                <th>العدد المتبقي</th>
+                <th>نسبة الإنجاز</th>
+            </tr>
+        </thead>
+         <tbody>
+             
+                <tr class="text-right fw-bold">
+                    <td > rectorat_user </td>  
+                    <td>{{data.emps_rect}} </td>  
+                    <td>{{data.existing_emp_rect}} </td>  
+                    <td>{{data.rest_emp_rect}} </td>  
+                    <td>{{data.percentage_rect}}% </td>  
+                       
+                </tr> 
+                <tr class="text-right fw-bold">
+                    <td > pol1_user </td>  
+                    <td>{{data.emps_pol1 }} </td>  
+                    <td>{{ data.existing_emp_pol1 }} </td>  
+                    <td>{{data.rest_emp_pol1}} </td>  
+                    <td>{{data.percentage_pol1}}%</td>  
+                </tr> 
+                 <tr class="text-right fw-bold">
+                    <td > pol2_user </td>  
+                    <td>{{data.emps_pol2}} </td>  
+                    <td>{{ data.existing_emp_pol2 }} </td>  
+                    <td>{{data.rest_emp_pol2}} </td>  
+                    <td>{{data.percentage_pol2}}% </td>  
+                    
+                </tr> 
+                 <tr class="text-right fw-bold">
+                    <td > pol3_user </td>  
+                    <td>{{data.emps_pol3 }} </td>  
+                    <td>{{data.existing_emp_pol3 }} </td>  
+                    <td>{{data.rest_emp_pol3}} </td>  
+                    <td>{{data.percentage_pol3}}% </td>  
+                </tr> 
+                 
+            </tbody>
+        </table>
+         
+    </div> 
+ {% endblock content %}
+

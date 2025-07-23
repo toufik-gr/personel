@@ -1,0 +1,127 @@
+{% extends "layout.html" %} 
+{% load crispy_forms_tags %}
+ 
+{% block content %}
+  
+     <title>تحديث</title>
+     <h2 class="text-center my-3 text-danger"> تحديث المعلومات  </h2>
+     <div class="container" style="direction: rtl; text-align: right;">
+          
+         
+        <div class="card card-body ">
+          <form class="row g-2"  method="POST" enctype = "multipart/form-data">
+                {% csrf_token%}
+                 <div class="row g-1 text-info">
+                 <div class="col-md-4">
+                    {{form.Nom|as_crispy_field}}
+                  </div>
+                   <div class="col-md-4">
+                     {{form.Prénom|as_crispy_field}}	 
+                </div> 
+                 <div class="col-md-4">
+                     {{form.Type|as_crispy_field}}	 
+                </div>  
+             </div> 
+            
+            <div class="row g-4 text-info">
+                  <div class="col-md-3">
+                    {{form.NIN|as_crispy_field}}
+                  </div>
+                  <div class="col-md-3">
+                    {{form.matricule|as_crispy_field}}
+                 </div>
+
+                  <div class="col-md-3">
+                         {{form.dat_naiss|as_crispy_field}}
+                  </div>
+                                 
+                  <div class="col-md-3">
+                     {{form.Lieu_naiss|as_crispy_field}}
+                  </div>
+                   </div>
+    
+                    <div class="row g-4 text-info">
+                        <div class="col-md-4">
+                            {{form.date_recrut|as_crispy_field}}	 
+                      </div>
+                        
+                    <div class="col-md-4">
+                     {{form.grade|as_crispy_field}}	 
+                      
+                    </div> 
+                    <div class="col-md-3 ">
+                        {{form.Catégorie|as_crispy_field}}	 
+                        
+                       </div> 
+                    </div> 
+                    <div class="row g-4 text-info">    
+                        <div class="col-md-3">
+                        {{form.faculte|as_crispy_field}}	 
+                        </div> 
+                        <div class="col-md-3 "  id="positionId">
+                          {{form.position|as_crispy_field}}	 
+                        </div>
+                         
+                        <div class="col-md-3 " id="debutPos" style="display: none;">
+                          {{ form.debut_position|as_crispy_field }}	 
+                      </div> 
+                      
+                      <div class="col-md-3 " id="finPos" style="display: none;">
+                          {{ form.fin_position|as_crispy_field }}	 
+                      </div>
+                    </div> 
+                </div> 
+
+
+        <br>
+        <button  class="btn btn-success" type="submit">
+            <i class="fa fa-edit fa-lg"></i> حفظ
+        </button>
+        
+        <a class="btn btn-warning text-white" 
+        href="{% url 'empList' 'update'%}">
+        <i class="fa fa-undo"></i>رجوع</a>
+        <br>
+                
+    </form>
+    </div> 
+  </div>
+
+    
+    {% endblock content %}
+    
+    {% block script %}
+    <script>document.addEventListener("DOMContentLoaded", function() {
+      let positionField = document.getElementById("id_position"); // Adjust ID if different
+      let debutPos = document.getElementById("debutPos");
+      let finPos = document.getElementById("finPos");
+       
+      // Get input fields inside divs
+      let debutInput = debutPos.querySelector("input");
+      let finInput = finPos.querySelector("input");
+           
+      function toggleMisDispoFields() {
+          if (positionField.value === "في الخدمة") {
+              debutPos.style.display = "none";
+              finPos.style.display = "none";
+              // Clear values when hiding the fields
+              if (debutInput) debutInput.value = "";
+              if (finInput) finInput.value = "";
+       
+               } else {
+                debutPos.style.display = "block";
+                finPos.style.display = "block";
+  
+              }
+  
+          }
+      
+          // Run once on page load (useful if editing an instance)
+          toggleMisDispoFields();
+      
+          // Add event listener for changes
+          positionField.addEventListener("change", toggleMisDispoFields);
+      });
+      </script>
+ 
+  {% endblock script %}

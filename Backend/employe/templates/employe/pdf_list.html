@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- to get url in arabic -->
+{% load custom_filters %} 
+{% load crispy_forms_tags %} 
+
+    <div class="text-right mr-0">
+        <h4 class="text-center my-3 text-danger">ملفات الموظف</h4>
+        <!-- Table -->
+        <table class="table table-striped">
+            <thead>
+                <tr class="text-right">
+                    <th>رقم</th>
+                    <th>اللقب</th>
+                    <th>الإسم</th>
+                    <th>الميلاد</th>
+                    <th>الرتبة</th>
+                    <th>الكلية</th> 
+                </tr>
+            </thead>
+            <tbody>
+                 
+                <tr class="text-right">
+                    <td>{{ empl.id }}</tds>  
+                    <td>{{ empl.Nom }}</td>  
+                    <td>{{ empl.Prénom }}</td>
+                    <td>{{ empl.dat_naiss|date:"Y-m-d" }}</td>
+                    <td>{{ empl.grade }}</td>
+                    <td>{{ empl.faculte }}</td>                
+                 </tr>
+             </tbody>
+        </table>
+    
+        <br>
+    </div>
+    
+        <!-- Column for the List (ul) and Link (a) -->
+            {% comment %} <div class="text-right mr-0" > {% endcomment %}
+                <form method="GET" class="d-flex align-items-center gap-2">              
+                   الرتبة <div class="me-2 w-25 mt-3"> {{ form.grade|as_crispy_field }}</div>  
+                    <button type="submit" class="btn btn-primary">عرض</button>
+                </form>      
+                <div class="text-start ms-0">
+                    <h2> عدد الملفات : <strong>{{count}} </strong></h2> 
+                </div>  
+                 
+                {% comment %} table {% endcomment %}
+                {% if request.GET%}
+                    <table class="table table-striped" >
+                    <thead>
+                      <tr class="text-right">
+                         
+                          <th>المستخدم</th>
+                          <th>بتاريخ</th>
+                          <th>الرتبة</th>
+                          <th scope="col">معاينة</th>
+                          <th scope="col">تحميل</th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for pdf in pdfs %}
+                    <tr class="text-right">
+                        <td>  {{request.user}} </td>
+                        <td>  {{pdf.uploaded_at|date:"Y-m-d H:i:s"}} </td>
+                        <td>  {{pdf.grade}} </td>
+                        
+                        <td>
+                        <a href="{{ pdf.pdf_file.url|urldecode }}">{{ pdf.pdf_file.name }}</a>
+                        {% comment %} target="_blank" in href to view in new page {% endcomment %}
+                        </td>  
+                        <td><a href="{% url 'employe:download_pdf' pdf.id %}"><i class="fas fa-download"></i>
+                        </a></td>
+                    </tr>
+                </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">لا يوجد نتائج</td>
+                    </tr>
+                    {% endfor %} 
+                    </tbody>
+                </table>
+                <br> 
+     
+                {% comment %} <a href={% url 'employeList' 'add_file' %} class="btn btn-primary">رفع ملفات أخرى</a>            {% endcomment %}
+       </div> 
+      
+         
+    </div> 
+    {% endif%}
+{% endblock content %}
+

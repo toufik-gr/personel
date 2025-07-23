@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- to get url in arabic -->
+{% load custom_filters %} 
+
+    <div class="text-right mr-0">
+        <h4 class="text-center my-3 text-danger">ملفات المتعاقد</h4>
+        <!-- Table -->
+        <table class="table table-striped">
+            <thead>
+                <tr class="text-right">
+                    <th>رقم</th>
+                    <th>اللقب</th>
+                    <th>الإسم</th>
+                    <th>الميلاد</th>
+                    <th>المنصب</th>
+                    <th>الكلية</th> 
+                </tr>
+            </thead>
+            <tbody>
+                {% comment %} {% for emp in emp_list %} {% endcomment %}
+                <tr class="text-right">
+                    <td>{{ emp.id }}</tds>  
+                    <td>{{ emp.Nom }}</td>  
+                    <td>{{ emp.Prénom }}</td>
+                    <td>{{ emp.dat_naiss| date:"Y-m-d" }}</td>
+                    <td>{{ emp.grade }}</td>
+                    <td>{{ emp.faculte }}</td>                
+                 </tr>
+             </tbody>
+        </table>
+    
+        <br>
+    </div>
+    
+        <!-- Column for the List (ul) and Link (a) -->
+            {% comment %} <div class="text-right mr-0" > {% endcomment %}
+                       
+                {% comment %} table {% endcomment %}
+                    <table class="table table-striped" >
+                    <thead>
+                      <tr class="text-right">
+                         
+                          <th>المستخدم</th>
+                          <th>بتاريخ</th>
+                          <th scope="col">معاينة</th>
+                          <th scope="col">تحميل</th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for pdf in pdfs %}
+                    <tr class="text-right">
+                        <td>  {{request.user}} </td>
+                        <td>  {{pdf.uploaded_at|date:"Y-m-d H:i:s"}} </td>
+                       
+                        <td>
+                        
+                        <a href="{{ pdf.pdf_file.url|urldecode }}">{{ pdf.pdf_file.name }}</a>
+                    
+                        {% comment %} target="_blank" in href to view in new page {% endcomment %}
+                        </td>  
+                        <td><a href="{% url 'posts:download_pdf' pdf.id %}"><i class="fas fa-download"></i>
+                        </a></td>
+                    </tr>
+                </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">لا يوجد نتائج</td>
+                    </tr>
+                    {% endfor %} 
+                    </tbody>
+                </table>
+                <br> 
+     
+                <a href={% url 'empList' 'add_file' %} class="btn btn-primary">رفع ملفات أخرى</a>           
+       </div> 
+      
+         
+    </div> 
+ 
+{% endblock content %}
+

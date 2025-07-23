@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<br>
+    <h2 class="text-center text-success">الإحصائيات</h2>
+<br>
+<div class="text-right mr-0">
+    <h3>المتعاقدين : <span> {{count_emp}} </span></h3>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr class="text-right bg-secondary text-white">
+                <th>المستخدم</th>
+                <th>عدد المتعاقدين</th>
+                <th>العدد المنجز</th>
+                <th>العدد المتبقي</th>
+                <th>نسبة الإنجاز</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, values in data_emp.items %}
+                <tr class="text-right fw-bold">
+                    <td>{{ key }}</td>  
+                    <td>{{ values.emps }}</td>  
+                    <td>{{ values.existing }}</td>  
+                    <td>{{ values.rest }}</td>  
+                    <td>{{ values.percentage }}%</td>  
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br>
+<div class="text-right mr-0">
+     
+    <h3> الأساتذة : <span> {{count_ens}} </span> </h3> 
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr class="text-right bg-secondary text-white">
+                <th>المستخدم</th>
+                <th>عدد الأساتذة</th>
+                <th>العدد المنجز</th>
+                <th>العدد المتبقي</th>
+                <th>نسبة الإنجاز</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, values in data_ens.items %}
+                <tr class="text-right fw-bold">
+                    <td>{{ key }}</td>  
+                    <td>{{ values.ens }}</td>  
+                    <td>{{ values.existing }}</td>  
+                    <td>{{ values.rest }}</td>  
+                    <td>{{ values.percentage }}%</td>  
+                </tr>
+            {% endfor %}
+        </tbody>
+  
+    </table>
+</div>
+
+<div class="text-right mr-0">
+    <h3>الموظفين : <span> {{count_employe}} </span></h3>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr class="text-right bg-secondary text-white">
+                <th>المستخدم</th>
+                <th>عدد الموظفين</th>
+                <th>العدد المنجز</th>
+                <th>العدد المتبقي</th>
+                <th>نسبة الإنجاز</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, values in data_employe.items %}
+                <tr class="text-right fw-bold">
+                    <td>{{ key }}</td>  
+                    <td>{{ values.emps }}</td>  
+                    <td>{{ values.existing }}</td>  
+                    <td>{{ values.rest }}</td>  
+                    <td>{{ values.percentage }}%</td>  
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+ {% endblock content %}
+

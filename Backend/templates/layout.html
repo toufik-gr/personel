@@ -1,0 +1,203 @@
+<!DOCTYPE html >
+{% load static %}
+{% load bootstrap5 %}
+{% load crispy_forms_tags %}
+
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            التوثيق الرقمي 
+        {% endblock %}
+    </title>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>     
+
+    <style>
+        .emp-item { cursor: pointer; color: blue; text-decoration: underline; }
+        .emp-item:hover { color: red; }
+    </style>
+
+    
+    <!-- Bootstrap 5 CSS -->
+     
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+ 
+
+</head>
+<body> 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white ml-auto">
+        <a class="navbar-brand" href="#">برنامج الحفظ الإلكتروني</a>
+        
+        <!-- Toggle button for mobile -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse ml-auto" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">الرئيسية</a>
+                 </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">المستخدم : {{request.user}}</a>
+                    </li>
+                          
+                            <li class="category-select" data-category="متعاقدين">
+                                <a class="nav-link" href="#"> الفئة :  متعاقدين </a></li>
+                            <li class=" category-select" data-category="أساتذة">
+                                <a class="nav-link" href="#">أساتذة </a></li>
+                            <li class=" category-select" data-category="موظفين">
+                                <a class="nav-link" href="#">موظفين</a></li>
+                     
+                     {% comment %}
+                     <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            الفئة : <strong> {{request.session.selected_category}} </strong>
+                        </a>
+                    </li>
+                     
+                     
+                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li class="dropdown-item category-select" data-category="متعاقدين" >متعاقدين</li>
+                            <li class="dropdown-item category-select" data-category="أساتذة">أساتذة</li>
+                            <li class="dropdown-item category-select" data-category="موظفين">موظفين</li>
+                     </ul>  {% endcomment %}
+                        
+                        {% comment %} <li><a class="dropdown-item category-select" data-category="متعاقدين" href="#">متعاقدين</a></li>
+                            <li><a class="dropdown-item category-select" data-category="أساتذة" href="#">أساتذة</a></li>
+                            <li><a class="dropdown-item category-select" data-category="موظفين" href="#">موظفين</a></li> {% endcomment %}
+                    {% comment %} </li> {% endcomment %}
+                    
+                    <li class="nav-item">
+                        <form class="logout" action="{% url 'users:logout' %}" method="post">
+                            {% csrf_token %}                   
+                            <a class="nav-link" href="{% url 'users:logout' %}">خروج</a>
+                        </form>
+                    </li>
+                
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:login' %}">دخول</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+ 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <a href="/">
+            <span role="img" aria-label="Home" title="الرئيسية" class="h2">🏠</span>
+        </a> | 
+        
+            {% if request.session.selected_category == "أساتذة" %}
+            
+                <a href="{% url 'enseignList' 'update' %}">
+                    <span role="img" aria-label="Posts" title="قائمة الأساتذة" class="h2">📰</span>
+                </a> |
+                
+                <a href="{% url 'enseignList' 'add_file' %}">
+                    <span role="img" aria-label="New Post" title="إضافة ملفات" class="h2">🆕</span>
+                </a>  
+                <a href="{% url 'enseignList' 'preview' %}"><!--<a href="{% url 'enseignList' 'view' %}">-->
+                    <span role="img" aria-label="About" title="كل الملفات" class="h2">📥</span>
+                </a> | 
+  
+                <form class="logout" action="{% url 'users:logout' %}" method="post">
+                    {% csrf_token %} 
+                    <button class="logout-button" aria-label=" User Logout" title="خروج"class="h2"
+                    >👋</button>
+                </form> 
+             
+            {% elif request.session.selected_category == "متعاقدين"  %}  {# Default to Employees #}
+                <a href="{% url 'empList' 'update' %}">
+                    <span role="img" aria-label="Posts" title="قائمة المتعاقدين" class="h2">📰</span>
+                </a> |
+                <a href="{% url 'empList' 'add_file' %}">
+                    <span role="img" aria-label="New Post" title="إضافة ملفات" class="h2">🆕</span>
+                </a>  
+                <a href="{% url 'empList' 'view' %}">
+                    <span role="img" aria-label="About" title="كل الملفات" class="h2">📥</span>
+                </a> | 
+               
+                <form class="logout" action="{% url 'users:logout' %}" method="post">
+                    {% csrf_token %} 
+                    <button class="logout-button" aria-label=" User Logout" title="خروج"class="h2"
+                    >👋</button>
+                </form> 
+              
+                {% elif request.session.selected_category == "موظفين"  %}  
+                <a href="{% url 'employeList' 'update' %}">
+                    <span role="img" aria-label="Posts" title="قائمة الموظفين" class="h2">📰</span>
+                </a> |
+                <a href="{% url 'employeList' 'add_file' %}">
+                    <span role="img" aria-label="New Post" title="إضافة ملفات" class="h2">🆕</span>
+                </a>  
+                <a href="{% url 'employeList' 'preview' %}">
+                    <span role="img" aria-label="About" title="كل الملفات" class="h2">📥</span>
+                </a> | 
+                 
+
+                <form class="logout" action="{% url 'users:logout' %}" method="post">
+                    {% csrf_token %} 
+                    <button class="logout-button" aria-label=" User Logout" title="خروج"class="h2"
+                    >👋</button>
+                </form>
+                          
+        {% else %} 
+        
+        <a href="{% url 'users:login' %}">
+            <span role="img" aria-label="User Login" title="دخول" class="h2">🔏</span>
+        </a>
+        {% endif %}
+
+        {% comment %} {% if request.user.username == "admin_user" or request.user.username == "grira" %} {% endcomment %}
+        <a href="{% url 'dashboard:dashboard' %}">
+            <span role="img" aria-label="About" title="الإحصائيات" class="h2">📊</span>
+        </a> 
+        {% comment %} {% endif %}   {% endcomment %}
+
+    </nav>
+    
+    <main role="main" class="container" >
+    <div class="row">
+      <div class="col-md-12">
+        {% if messages %}
+          {% for message in messages %}
+              <div class="alert alert-{{message.tags}} text-right"  >
+                {{message}}
+              </div>	
+          {% endfor %}
+        {% endif %}
+        {% block content %}
+        
+        {% endblock content %}   
+      </div>
+    </main>
+    {% block script %}
+    {% endblock script %}
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+<script>
+    document.querySelectorAll(".category-select").forEach(item => {
+        item.addEventListener("click", function(e) {
+            e.preventDefault();
+            let selectedCategory = this.getAttribute("data-category");
+            fetch("/set-category/?category=" + selectedCategory).then(() => {
+                window.location.href = "/";  // Redirect to home page
+            });
+        });
+    });
+    
+</script>
+</body> 
+</html>
